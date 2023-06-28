@@ -34,11 +34,13 @@ public class DataEnrichmentController : ControllerBase
             return Problem("Unable to interpret the CSV data. Are you sure the data has all the required fields?", statusCode: 500);
         }
 
+        var processedTransactions = await _dataEnricher.EnrichData(transactions);
+
         var result = new StringBuilder();
         await using (var writer = new StringWriter(result))
         await using (var csvExportWriter = new CsvWriter(writer, CultureInfo.InvariantCulture))
         {
-            await csvExportWriter.WriteRecordsAsync(transactions);
+            await csvExportWriter.WriteRecordsAsync(processedTransactions);
         }
         
         return Content(result.ToString(), "text/csv");
