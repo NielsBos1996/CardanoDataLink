@@ -15,6 +15,13 @@ This repository contains code Global LEI System (GLEIF)
   - Validate missing values, numbers < 0
 - Application must be able to handle CSV input
 - Application must return CSV output
+- Added data
+  - `legalName`
+  - `bic`
+  - `transaction_costs`
+    - notial * rate - notial <-- if country is GB
+    - Abs(notional * (1 / rate) - notional) <-- if country is NL
+    - Unknown <-- for any other country
 
 
 ## Components
