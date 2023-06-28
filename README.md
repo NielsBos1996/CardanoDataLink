@@ -18,6 +18,8 @@ This repository contains code Global LEI System (GLEIF)
 - Added data
   - `legalName`
   - `bic`
+    - Empty if no bic available
+    - In case multiple values are available, these values are seperated by a `;`
   - `transaction_costs`
     - notial * rate - notial <-- if country is GB
     - Abs(notional * (1 / rate) - notional) <-- if country is NL

@@ -4,6 +4,8 @@ using CardanoDataLink.Infra.Gleif;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddHttpClient();
+
 builder.Services.AddControllers();
 builder.Services.AddScoped<IGleifClientInterface, HttPGleifRepository>();
 builder.Services.AddScoped<IDataEnricher, DataEnricher>();

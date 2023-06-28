@@ -12,12 +12,15 @@ public class DataEnricher : IDataEnricher
         _gleifClient = gleifClient;
     }
     
-    public Task<IEnumerable<Transaction>> EnrichData(IEnumerable<Transaction> transactions)
+    public async Task<IEnumerable<Transaction>> EnrichData(IEnumerable<Transaction> transactions)
     {
-        return Task.FromResult(transactions.Select(t =>
+        var Leifs = transactions.Select(t => t.Lei).Distinct();
+        var data = await _gleifClient.GetByIdentifier(Leifs);
+        
+        return transactions.Select(t =>
         {
             t.TransactionUti = "This changes information";
             return t;
-        }));
+        });
     }
 }

@@ -1,6 +1,8 @@
-﻿namespace CardanoDataLink.Domain.Gleif;
+﻿using CardanoDataLink.Infra.Gleif;
+
+namespace CardanoDataLink.Domain.Gleif;
 
 public interface IGleifClientInterface
 {
-    string[] GetByIdentifier(string[] leis);
+    Task<LeiRecords> GetByIdentifier(IEnumerable<string> leis);
 }
