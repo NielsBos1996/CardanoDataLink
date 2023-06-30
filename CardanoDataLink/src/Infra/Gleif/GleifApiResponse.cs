@@ -12,6 +12,7 @@ public class DataItem
 
 public class Attributes
 {
+    public string lei { get; set; }
     public Entity entity { get; set; }
     public string[]? bic { get; set; }
 }
@@ -19,6 +20,12 @@ public class Attributes
 public class Entity
 {
     public LegalName legalName { get; set; }
+    public LegalAddress legalAddress { get; set; }
+}
+
+public class LegalAddress
+{
+    public string country { get; set; }
 }
 
 public class LegalName

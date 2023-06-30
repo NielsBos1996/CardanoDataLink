@@ -14,13 +14,49 @@ public class DataEnricher : IDataEnricher
     
     public async Task<IEnumerable<Transaction>> EnrichData(IEnumerable<Transaction> transactions)
     {
-        var Leifs = transactions.Select(t => t.Lei).Distinct();
-        var data = await _gleifClient.GetByIdentifier(Leifs);
+        var gleifs = transactions.Select(t => t.Lei).Distinct();
+        var data = await _gleifClient.GetByIdentifier(gleifs);
         
         return transactions.Select(t =>
         {
-            t.TransactionUti = "This changes information";
+            var transactionData = data.data.First(d => d.attributes.lei == t.Lei);
+            var leiEntity = transactionData?.attributes?.entity;
+
+            var transactionCost = CalculateTransactionCost(leiEntity?.legalAddress.country, t.Notional, t.Rate);
+            if (transactionCost == null)
+            {
+                t.Reason = "Transaction cost cannot be calculated as the legal entity country is " +
+                           leiEntity?.legalAddress.country;
+            }
+
+            t.TransactionCost = transactionCost;
+            t.LegalName = leiEntity?.legalName.name;
+            t.Bic = transactionData?.attributes?.bic == null ? "" : string.Join(";", transactionData.attributes.bic);
+            
             return t;
         });
+    }
+
+    private double? CalculateTransactionCost(string? country, double notional, double rate)
+    {
+        // the fancy way would be to create and implement something like a transactionCostInterface, which would be
+        // returned by a transactionCostFactory.
+        // but fow now I'll stick to the KISS priniple
+        return country switch
+        {
+            "NL" => CalculateTransactionCostNL(notional, rate),
+            "GB" => CalculateTransactionCostGB(notional, rate),
+            _ => null
+        };
+    }
+
+    private double CalculateTransactionCostNL(double notional, double rate)
+    {
+        return Math.Abs(notional * ( 1 / rate) - notional);
+    }
+    
+    private double CalculateTransactionCostGB(double notional, double rate)
+    {
+        return notional * rate - notional;
     }
 }

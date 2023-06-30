@@ -30,8 +30,12 @@ public class Transaction
     public string? Bic { get; set; }
     
     [Optional]
+    [Name("reason")]
+    public string? Reason { get; set; }
+    
+    [Optional]
     [Name("transaction_cost")]
-    public float? TransactionCost { get; set; }
+    public double? TransactionCost { get; set; }
 
     public bool CanBeProcessed()
     {
