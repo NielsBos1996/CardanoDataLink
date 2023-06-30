@@ -1,12 +1,37 @@
 # CardanoDataLink
 This repository contains code Global LEI System (GLEIF)
 
-## Assumptions
-- Data is UTF-8 encoded
-- Transaction notional has to be bigger than zero
+# Usage
+```python
+import pandas as pd
+from requests import post
+import io
+import sys
+
+# define url of the application
+url = 'http://localhost:5000/api/data-enrichment'
+
+# load data into python
+data = pd.read_csv('./test_data.csv')
+
+# make the api call
+response = post(url, data=data.to_csv(index=False))
+
+if response.status_code != 200:
+    print(response.text) # api is unable to fetch data
+    sys.exit(1)
 
 
-## Requirements
+new_data = pd.read_csv(io.StringIO(response.text))
+
+# transform this column to have a list with bic values
+new_data['bic'] = new_data['bic'].apply(lambda x: x.split(';'))
+
+# uncomment to save the file to disk
+# new_data.to_csv('./output.csv', index=False)
+```
+
+# Project Requirements
 - Process gets about 1-2k rows per data enrichment. For this amount of data the endpoint must return within a reasonable time
   - Enrichment takes place immediate after the user triggers it
 - Data must be self explanatory
@@ -24,26 +49,13 @@ This repository contains code Global LEI System (GLEIF)
     - notial * rate - notial <-- if country is GB
     - Abs(notional * (1 / rate) - notional) <-- if country is NL
     - Unknown <-- for any other country
+  - `reason`
+    - In case the transaction cost cannot be calculated the reason will be given
 
-
-## Components
-- Logger (LoggerInterface)
-- HTTPGleifClient (GleifClientInterface)
-
-
-## Entities
-- Transaction (single CSV record)
-- Dataset (holds Transaction[])
+## Assumptions
+- Data is UTF-8 encoded
+- Transaction notional has to be bigger than zero
 
 ## Flow
 - POST /api/data-enrichment
-  - Data gets loaded into entities
-    - If columns are missing, 400 BAD request is returned
-    - 
-
-## Steps taken
-- Understand case, make requirements
-- gleif api can retrieve multiple records with a comma-separated list https://api.gleif.org/api/v1/lei-records?filter[lei]=261700K5E45DJCF5Z735,4469000001AVO26P9X86,5493001KJTIIGC8Y1R12
-
-
-## Answers to questions
+todo: document a bit more / order this file
