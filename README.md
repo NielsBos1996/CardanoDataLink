@@ -52,9 +52,9 @@ new_data['bic'] = new_data['bic'].apply(lambda x: x.split(';'))
   - `reason`
     - In case the transaction cost cannot be calculated the reason will be given
 
-## Assumptions
-- Data is UTF-8 encoded
-- Transaction notional has to be bigger than zero
+## Possible next steps
+- Add authentication to this endpoint
+- Start using CancellationToken
 
 ## Flow
 - POST /api/data-enrichment

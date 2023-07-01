@@ -30,8 +30,8 @@ public class Transaction
     public string? Bic { get; set; }
     
     [Optional]
-    [Name("reason")]
-    public string? Reason { get; set; }
+    [Name("transaction_cost_explained")]
+    public string? TransactionCostReason { get; set; }
     
     [Optional]
     [Name("transaction_cost")]

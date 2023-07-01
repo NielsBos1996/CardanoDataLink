@@ -23,13 +23,8 @@ public class DataEnricher : IDataEnricher
             var leiEntity = transactionData?.attributes?.entity;
 
             var transactionCost = CalculateTransactionCost(leiEntity?.legalAddress.country, t.Notional, t.Rate);
-            if (transactionCost == null)
-            {
-                t.Reason = "Transaction cost cannot be calculated as the legal entity country is " +
-                           leiEntity?.legalAddress.country;
-            }
-
-            t.TransactionCost = transactionCost;
+            t.TransactionCost = transactionCost.Result;
+            t.TransactionCostReason = transactionCost.Reason;
             t.LegalName = leiEntity?.legalName.name;
             t.Bic = transactionData?.attributes?.bic == null ? "" : string.Join(";", transactionData.attributes.bic);
             
@@ -37,7 +32,7 @@ public class DataEnricher : IDataEnricher
         });
     }
 
-    private double? CalculateTransactionCost(string? country, double notional, double rate)
+    private TransactionCostResult CalculateTransactionCost(string? country, double notional, double rate)
     {
         // the fancy way would be to create and implement something like a transactionCostInterface, which would be
         // returned by a transactionCostFactory.
@@ -46,17 +41,25 @@ public class DataEnricher : IDataEnricher
         {
             "NL" => CalculateTransactionCostNL(notional, rate),
             "GB" => CalculateTransactionCostGB(notional, rate),
-            _ => null
+            _ => new TransactionCostResult { Reason = $"no calculation available for county {country}" }
         };
     }
 
-    private double CalculateTransactionCostNL(double notional, double rate)
+    private TransactionCostResult CalculateTransactionCostNL(double notional, double rate)
     {
-        return Math.Abs(notional * ( 1 / rate) - notional);
+        return new TransactionCostResult
+        {
+            Result = Math.Abs(notional * (1 / rate) - notional),
+            Reason = $"Abs({notional} * (1 / {rate}) - {notional})"
+        };
     }
     
-    private double CalculateTransactionCostGB(double notional, double rate)
+    private TransactionCostResult CalculateTransactionCostGB(double notional, double rate)
     {
-        return notional * rate - notional;
+        return new TransactionCostResult
+        {
+            Result = notional * rate - notional,
+            Reason = $"{notional} * {rate} - {notional}"
+        };
     }
 }
