@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  cardanodatalink:
+    container_name: cardanodatalink
+    build:
+      context: ./CardanoDataLink
+      dockerfile: Docker/Dockerfile
+    ports:
+      - "80:80"
+    volumes:
+      - build_output:/app/build
+  
+  cardanodatalinktests:
+    container_name: cardanodatalinktests
+    build:
+      context: .
+      dockerfile: CardanoDataLink.Tests/Docker/Dockerfile
+    volumes:
+      - build_output:/app/build
+    depends_on:
+      - cardanodatalink
+
+volumes:
+  build_output:

@@ -4,6 +4,11 @@ using CardanoDataLink.Infra.Gleif;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(80);
+});
+
 builder.Services.AddHttpClient();
 
 builder.Services.AddControllers();
