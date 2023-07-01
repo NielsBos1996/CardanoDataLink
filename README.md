@@ -55,6 +55,8 @@ new_data['bic'] = new_data['bic'].apply(lambda x: x.split(';'))
 ## Possible next steps
 - Add authentication to this endpoint
 - Start using CancellationToken
+- Improve test coverage
+  - Add integration tests
 
 ## Flow
 - POST /api/data-enrichment

@@ -1,6 +1,6 @@
 ﻿using CardanoDataLink.Domain.Entities;
 
-namespace CardanoDataLink.Domain.DataEnricher;
+namespace CardanoDataLink.Domain.DataHandler;
 
 public interface IDataEnricher
 {

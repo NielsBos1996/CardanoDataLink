@@ -1,7 +1,7 @@
 ﻿using CardanoDataLink.Domain.Entities;
 using CardanoDataLink.Domain.Gleif;
 
-namespace CardanoDataLink.Domain.DataEnricher;
+namespace CardanoDataLink.Domain.DataHandler;
 
 public class DataEnricher : IDataEnricher
 {
