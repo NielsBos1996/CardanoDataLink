@@ -1,7 +1,54 @@
 # CardanoDataLink
 This repository contains code Global LEI System (GLEIF)
 
-# Usage
+# Running the program
+Running this application will start a http webserver on port 80.
+## Local
+Make sure you have dotnet 7 installed.
+
+Start the application
+```bash
+cd CardanoDataLink
+dotnet run
+```
+
+Run unit tests
+```bash
+dotnet test
+```
+
+## Docker
+Start the application
+```bash
+docker-compose up -d cardanodatalink
+```
+
+Run unit tests
+```bash
+docker-compose up cardanodatalinktests
+```
+
+# Interacting with the program
+The application implements a single endpoint, `/api/data-enrichment`. To use this endpoint, make a post request with a CSV file in the body.
+The CSV file must contain the following fields
+- transaction_uti
+- isin,notional
+- notional_currency
+- transaction_type
+- transaction_datetime
+- rate
+- lei
+
+In case the application executed successfully, the response body will contain a CSV file with the added fields. A success response will have status code 200 OK.
+- legal_name
+- bic
+- transaction_cost
+- transaction_cost_explained
+
+To get a feeling of how the output data looks, see [this file](./output.csv)
+
+## Example script
+For this script to run you will need to have python 3 installed, along with the libraries `pandas` and `requests`.
 ```python
 import pandas as pd
 from requests import post
@@ -9,7 +56,7 @@ import io
 import sys
 
 # define url of the application
-url = 'http://localhost:5000/api/data-enrichment'
+url = 'http://localhost/api/data-enrichment'
 
 # load data into python
 data = pd.read_csv('./test_data.csv')
@@ -48,8 +95,9 @@ new_data['bic'] = new_data['bic'].apply(lambda x: x.split(';'))
   - `transaction_costs`
     - notial * rate - notial <-- if country is GB
     - Abs(notional * (1 / rate) - notional) <-- if country is NL
-    - Unknown <-- for any other country
-  - `reason`
+    - Empty <-- for any other country
+  - `transaction_cost_explained`
+    - Calculation of the transaction_cost if possible
     - In case the transaction cost cannot be calculated the reason will be given
 
 ## Possible next steps
@@ -57,7 +105,3 @@ new_data['bic'] = new_data['bic'].apply(lambda x: x.split(';'))
 - Start using CancellationToken
 - Improve test coverage
   - Add integration tests
-
-## Flow
-- POST /api/data-enrichment
-todo: document a bit more / order this file
