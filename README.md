@@ -1,5 +1,15 @@
 # CardanoDataLink
-This repository contains code Global LEI System (GLEIF)
+This repository contains code Global LEI System (GLEIF). This application hosts an API with a single endpoint. In short it takes a CSV as input, then adds some data and returns the updated CSV file. More info below.
+
+# TOC
+- [Running the program](#running-the-program)
+  * [Local](#local)
+  * [Docker](#docker)
+- [Interacting with the program](#interacting-with-the-program)
+  * [Example script](#example-script)
+- [Project Requirements](#project-requirements)
+  * [Possible next steps](#possible-next-steps)
+
 
 # Running the program
 Running this application will start a http webserver on port 80.
@@ -62,7 +72,7 @@ url = 'http://localhost/api/data-enrichment'
 data = pd.read_csv('./test_data.csv')
 
 # make the api call
-response = post(url, data=data.to_csv(index=False))
+response = post(url, data=data.to_csv(index=False), headers={'content-type': 'text/csv'})
 
 if response.status_code != 200:
     print(response.text) # api is unable to fetch data

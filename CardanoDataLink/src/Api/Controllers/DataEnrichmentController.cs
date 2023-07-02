@@ -26,6 +26,14 @@ public class DataEnrichmentController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<string>> Post()
     {
+        if (
+            string.IsNullOrEmpty(Request.ContentType)
+            || !Request.ContentType.Equals("text/csv", StringComparison.OrdinalIgnoreCase)
+        )
+        {
+            return BadRequest("Invalid content type, expected text/csv");
+        }
+        
         IEnumerable<Transaction> transactions;
         try
         {
